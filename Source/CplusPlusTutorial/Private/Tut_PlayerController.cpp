@@ -46,14 +46,32 @@ void ATut_PlayerController::BeginPlay()
     }
 }
 
+void ATut_PlayerController::Tick(float DeltaSeconds)
+{
+    if (APawn* ControlledPawn = GetPawn())
+    {
+        // Draw Persistent Debug arrow For the Pawn's forward direction
+        DrawDebugDirectionalArrow(GetWorld(), ControlledPawn->GetActorLocation() + ControlledPawn->GetActorRightVector() + 100.0f, 
+            ControlledPawn->GetActorLocation() + ControlledPawn->GetActorForwardVector() * 200.0f + ControlledPawn->GetActorRightVector() + 100.0f,
+            100.0f, FColor::Green, false, -1.0f, 0, 5.0f);
+
+        // Draw persistent debug arrow for the controller's forward direction
+        FVector ControllerForward = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X);
+        DrawDebugDirectionalArrow(GetWorld(), ControlledPawn->GetActorLocation() + ControlledPawn->GetActorRightVector() + 100.0f, 
+            ControlledPawn->GetActorLocation() + ControllerForward * 200.0f + ControlledPawn->GetActorRightVector() + 100.0f,
+            100.0f, FColor::Blue, false, -1.0f, 0, 5.0f);
+    }
+
+    
+}
+
 void ATut_PlayerController::Move(const FInputActionValue& Value)
 {
     if (APawn* ControlledPawn = GetPawn())
     {
         FVector2D MoveValue = Value.Get<FVector2D>();
-        // Use the character's rotation for movement rather than the control rotation
-        FVector Forward = ControlledPawn->GetActorForwardVector();
-        FVector Right = ControlledPawn->GetActorRightVector();
+        FVector Forward = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X);
+        FVector Right = FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y);
 
         ControlledPawn->AddMovementInput(Forward, MoveValue.Y);
         ControlledPawn->AddMovementInput(Right, MoveValue.X);

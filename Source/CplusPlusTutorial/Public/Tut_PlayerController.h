@@ -17,6 +17,7 @@ class CPLUSPLUSTUTORIAL_API ATut_PlayerController : public APlayerController
 public:
     virtual void SetupInputComponent() override;
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
