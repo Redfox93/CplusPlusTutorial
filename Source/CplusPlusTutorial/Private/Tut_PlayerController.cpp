@@ -116,3 +116,12 @@ void ATut_PlayerController::StopRun(const FInputActionValue& Value)
         UE_LOG(LogTemp, Warning, TEXT("Stopped Running: Old Speed = %f, New Speed = %f"), OldSpeed, ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed);
     }
 }
+
+void ATut_PlayerController::PrimaryAttack()
+{
+
+    if (ATut_Character* ControlledCharacter = Cast<ATut_Character>(GetPawn())) 
+    {
+
+    }
+}

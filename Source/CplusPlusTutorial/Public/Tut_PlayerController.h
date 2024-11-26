@@ -35,9 +35,13 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_Run;
 
+     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* IA_PrimaryAttack;
+
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void Jump(const FInputActionValue& Value);
     void Run(const FInputActionValue& Value);
     void StopRun(const FInputActionValue& Value);
+    void PrimaryAttack();
 };
