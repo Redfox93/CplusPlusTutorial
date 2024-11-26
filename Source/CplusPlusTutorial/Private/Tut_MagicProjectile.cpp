@@ -16,13 +16,16 @@ ATut_MagicProjectile::ATut_MagicProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
+	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
+	SphereComp->SetCollisionProfileName("Projectile");
+
 	RootComponent = SphereComp;
 	
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagarSystemComponent");
 	NiagaraComponent->SetupAttachment(SphereComp);
 
 	MovementComp = CreateDefaultSubobject <UProjectileMovementComponent>("MovementComp");
-	MovementComp->InitialSpeed = 1000.0f;
+	MovementComp->InitialSpeed = 500.0f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 

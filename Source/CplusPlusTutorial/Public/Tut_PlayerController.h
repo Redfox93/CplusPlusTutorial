@@ -15,11 +15,9 @@ class CPLUSPLUSTUTORIAL_API ATut_PlayerController : public APlayerController
     GENERATED_BODY()
 
 public:
-    virtual void SetupInputComponent() override;
     virtual void BeginPlay() override;
-    virtual void Tick(float DeltaSeconds) override;
 
-protected:
+    // Input mapping context and input actions - Change to public visibility
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputMappingContext* IMC_Default;
 
@@ -35,13 +33,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_Run;
 
-     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_PrimaryAttack;
-
-    void Move(const FInputActionValue& Value);
-    void Look(const FInputActionValue& Value);
-    void Jump(const FInputActionValue& Value);
-    void Run(const FInputActionValue& Value);
-    void StopRun(const FInputActionValue& Value);
-    void PrimaryAttack();
 };

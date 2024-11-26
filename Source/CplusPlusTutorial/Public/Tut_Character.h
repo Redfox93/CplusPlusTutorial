@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "Tut_Character.generated.h"
 
 class UCameraComponent;
@@ -13,6 +14,11 @@ UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
 
 public:
 	// Sets default values for this character's properties
@@ -35,5 +41,13 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+
+	// Input functions
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void Run(const FInputActionValue& Value);
+	void StopRun(const FInputActionValue& Value);
+	void PrimaryAttack();
 
 };
