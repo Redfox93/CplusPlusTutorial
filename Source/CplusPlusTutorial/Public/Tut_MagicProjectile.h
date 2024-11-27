@@ -14,6 +14,7 @@ class UProjectileMovementComponent;
 class UNiagaraComponent;
 
 
+
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_MagicProjectile : public AActor
 {
@@ -40,6 +41,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
 	UNiagaraComponent* NiagaraComponent;
-
-
 };

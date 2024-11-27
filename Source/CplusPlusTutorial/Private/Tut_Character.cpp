@@ -23,6 +23,9 @@ ATut_Character::ATut_Character()
     CameraComp->SetupAttachment(SpringArmComp);
     CameraComp->bUsePawnControlRotation = false;
 
+    //IMPLEMENT BINDING! LIKE "F" FOR INTERACT
+    InteractionComp = CreateDefaultSubobject<UTutInteractionComponent>(TEXT("InteractionComponent"));
+
     // Character Movement Configuration
     UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
     if (MovementComponent)

@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UTutInteractionComponent
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
@@ -31,6 +32,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
+
+
+	//IMPLEMENT BINDING! LIKE "F" FOR INTERACT
+	UPROPERTY(VisibleAnywhere)
+	UTutInteractionComponent* InteractionComp;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
