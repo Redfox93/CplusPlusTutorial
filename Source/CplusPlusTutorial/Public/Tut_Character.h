@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+
 #include "Tut_Character.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UTutInteractionComponent;
+class UAnimMontage;
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
@@ -18,8 +20,13 @@ class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* AttackAnim;
+
+	FTimerHandle TimerHandle_PrimaryAttack;
 
 public:
 	// Sets default values for this character's properties
@@ -53,6 +60,7 @@ public:
 	void Run(const FInputActionValue& Value);
 	void StopRun(const FInputActionValue& Value);
 	void PrimaryAttack();
+	void PrimaryAttack_TimeElapsed();
 	void PrimaryInteract();
 
 };

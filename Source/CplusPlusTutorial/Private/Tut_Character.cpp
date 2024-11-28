@@ -166,7 +166,24 @@ void ATut_Character::StopRun(const FInputActionValue& Value)
 
 void ATut_Character::PrimaryAttack()
 {
-    FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 100.0f;
+
+    PlayAnimMontage(AttackAnim);
+
+    GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ATut_Character::PrimaryAttack_TimeElapsed, 0.35f);
+  //  GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+
+}
+
+void ATut_Character::PrimaryAttack_TimeElapsed()
+{
+
+    USkeletalMeshComponent* MyMesh = GetMesh();
+
+
+
+    FVector SpawnLocation;
+    FRotator SpawnRotation;
+    MyMesh->GetSocketWorldLocationAndRotation("hand_l_Socket",SpawnLocation,SpawnRotation);
     FTransform SpawnTM = FTransform(GetControlRotation(), SpawnLocation);
 
     FActorSpawnParameters SpawnParams;
@@ -174,7 +191,10 @@ void ATut_Character::PrimaryAttack()
 
 
     GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
-    UE_LOG(LogTemp, Warning, TEXT("ATTACK:SUCCESS!"));
+
+    DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+
+
 }
 
 void ATut_Character::PrimaryInteract()
