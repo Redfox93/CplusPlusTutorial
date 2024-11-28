@@ -9,7 +9,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
-class UTutInteractionComponent
+class UTutInteractionComponent;
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
@@ -33,8 +33,6 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
-
-	//IMPLEMENT BINDING! LIKE "F" FOR INTERACT
 	UPROPERTY(VisibleAnywhere)
 	UTutInteractionComponent* InteractionComp;
 
@@ -55,5 +53,6 @@ public:
 	void Run(const FInputActionValue& Value);
 	void StopRun(const FInputActionValue& Value);
 	void PrimaryAttack();
+	void PrimaryInteract();
 
 };

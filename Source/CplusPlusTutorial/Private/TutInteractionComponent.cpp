@@ -2,6 +2,8 @@
 
 
 #include "TutInteractionComponent.h"
+#include "TutGameplayInterface.h"
+#include "DrawDebugHelpers.h"
 
 
 
@@ -34,13 +36,10 @@ void UTutInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	// ...
 }
 
-void UTutInteractionComponent::Primaryinteract()
+void UTutInteractionComponent::PrimaryInteract()
 {
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-
-	FVector Start;
-	
 
 	AActor* MyOwner = GetOwner();
 	FVector EyeLocation;
@@ -49,16 +48,34 @@ void UTutInteractionComponent::Primaryinteract()
 
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 
+	TArray<FHitResult> Hits;
 
-	FHitResult Hit;
-	GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
+	float Radius = 30.0f;
 
-	AActor* HitActor = Hit.GetActor();
-	if (HitActor)
+	FCollisionShape Shape;
+	Shape.SetSphere(Radius);
+
+	bool bBlockinHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
+
+	FColor  LineColor = bBlockinHit ? FColor::Green : FColor::Red;
+
+	for (FHitResult Hit : Hits)
 	{
-		APawn* MyPawn = Cast<APawn>(MyOwner);
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor)
+		{
+			if (HitActor->Implements<UTutGameplayInterface>())
+			{
+				APawn* MyPawn = Cast<APawn>(MyOwner);
+
+				ITutGameplayInterface::Execute_Interact(HitActor, MyPawn);
+				break;
+			}
+		}
+		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
 		
-		ITutGameplayInterface::Execute_Interact(HitActor, MyPawn);
 	}
+
+	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
 
 }

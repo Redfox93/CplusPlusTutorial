@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "DrawDebugHelpers.h"
+#include "TutInteractionComponent.h"
 
 // Sets default values
 ATut_Character::ATut_Character()
@@ -111,6 +112,10 @@ void ATut_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
             {
                 EnhancedInputComponent->BindAction(MyPlayerController->IA_PrimaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::PrimaryAttack);
             }
+            if (MyPlayerController->IA_PrimaryInteract)
+            {
+                EnhancedInputComponent->BindAction(MyPlayerController->IA_PrimaryInteract, ETriggerEvent::Triggered, this, &ATut_Character::PrimaryInteract);
+            }
         }
     }
 }
@@ -170,4 +175,13 @@ void ATut_Character::PrimaryAttack()
 
     GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
     UE_LOG(LogTemp, Warning, TEXT("ATTACK:SUCCESS!"));
+}
+
+void ATut_Character::PrimaryInteract()
+{
+    if (InteractionComp)
+    {
+        InteractionComp->PrimaryInteract();
+    }
+   
 }

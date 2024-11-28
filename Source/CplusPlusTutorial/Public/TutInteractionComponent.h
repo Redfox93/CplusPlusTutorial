@@ -12,9 +12,7 @@ class CPLUSPLUSTUTORIAL_API UTutInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public
 
-void Primaryinteract();
 
 public:	
 	// Sets default values for this component's properties
@@ -28,5 +26,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+
+	void PrimaryInteract();
 };
