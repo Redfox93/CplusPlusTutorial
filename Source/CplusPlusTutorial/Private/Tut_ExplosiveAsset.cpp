@@ -15,12 +15,16 @@ ATut_ExplosiveAsset::ATut_ExplosiveAsset()
 
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	StaticMeshComp->SetCollisionObjectType(ECC_PhysicsBody);
+    StaticMeshComp->SetSimulatePhysics(true);
 	RootComponent = StaticMeshComp;
 
 	RadialForceComp = CreateDefaultSubobject<URadialForceComponent>("RadialForceComponent");
 	RadialForceComp->SetupAttachment(StaticMeshComp);
+    RadialForceComp->SetAutoActivate(false);
+    RadialForceComp->bImpulseVelChange = true;
 	RadialForceComp->ForceStrength = 1000.f;
 	RadialForceComp->Radius = 500.f;
+    RadialForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
 
 	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
 	NiagaraComp->SetAutoActivate(false);
@@ -51,13 +55,23 @@ void ATut_ExplosiveAsset::OnHit(UPrimitiveComponent* HitComponent, AActor* Other
     {
         // Ensure it is not this actor (although this check may not be needed if the projectile is always a different actor)
         if (OtherActor != this)
-        {
+        {   
+         
+
             // Apply the radial force if the component and force strength are valid
-            if (RadialForceComp && RadialForceComp->IsActive())
+            if (RadialForceComp)
             {
+
+                RadialForceComp->Activate(true);
                 RadialForceComp->FireImpulse();
                
-                UE_LOG(LogTemp, Error, TEXT("ImpulseFired!"));
+                UE_LOG(LogTemp, Log, TEXT("ImpulseFired!"));
+
+                UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+
+                FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
+                DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
+
             }
 
             // Activate the Niagara effect if available

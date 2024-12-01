@@ -21,7 +21,10 @@ class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
 protected:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
@@ -60,6 +63,7 @@ public:
 	void Run(const FInputActionValue& Value);
 	void StopRun(const FInputActionValue& Value);
 	void PrimaryAttack();
+	void SecondaryAttack();
 	void PrimaryAttack_TimeElapsed();
 	void PrimaryInteract();
 

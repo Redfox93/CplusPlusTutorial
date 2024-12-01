@@ -6,7 +6,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TutBaseProjectile.h"
 #include "Tut_MagicProjectile.generated.h"
+
 
 
 class USphereComponent;
@@ -16,11 +18,11 @@ class UNiagaraComponent;
 
 
 UCLASS()
-class CPLUSPLUSTUTORIAL_API ATut_MagicProjectile : public AActor
+class CPLUSPLUSTUTORIAL_API ATut_MagicProjectile : public ATutBaseProjectile
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATut_MagicProjectile();
 
@@ -29,16 +31,7 @@ protected:
 	virtual void BeginPlay() override;
 
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* SphereComp;
-
-	UPROPERTY(VisibleAnywhere)
-	UProjectileMovementComponent* MovementComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
-	UNiagaraComponent* NiagaraComponent;
 };

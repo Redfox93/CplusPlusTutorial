@@ -112,6 +112,10 @@ void ATut_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
             {
                 EnhancedInputComponent->BindAction(MyPlayerController->IA_PrimaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::PrimaryAttack);
             }
+            if (MyPlayerController->IA_PrimaryAttack)
+            {
+                EnhancedInputComponent->BindAction(MyPlayerController->IA_SecondaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::SecondaryAttack);
+            }
             if (MyPlayerController->IA_PrimaryInteract)
             {
                 EnhancedInputComponent->BindAction(MyPlayerController->IA_PrimaryInteract, ETriggerEvent::Triggered, this, &ATut_Character::PrimaryInteract);
@@ -174,23 +178,44 @@ void ATut_Character::PrimaryAttack()
 
 }
 
-void ATut_Character::PrimaryAttack_TimeElapsed()
+void ATut_Character::SecondaryAttack()
 {
 
     USkeletalMeshComponent* MyMesh = GetMesh();
 
 
 
-    FVector SpawnLocation;
+    FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
     FRotator SpawnRotation;
-    MyMesh->GetSocketWorldLocationAndRotation("hand_l_Socket",SpawnLocation,SpawnRotation);
-    FTransform SpawnTM = FTransform(GetControlRotation(), SpawnLocation);
+
+    FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
 
     FActorSpawnParameters SpawnParams;
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 
-    GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+    GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTM, SpawnParams);
+
+    DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+}
+
+void ATut_Character::PrimaryAttack_TimeElapsed()
+{
+
+    USkeletalMeshComponent* MyMesh = GetMesh();
+
+    
+
+    FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
+    FRotator SpawnRotation;
+   
+    FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+
+    GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
 
     DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
 
