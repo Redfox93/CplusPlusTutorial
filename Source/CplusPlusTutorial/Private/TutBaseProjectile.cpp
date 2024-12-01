@@ -81,10 +81,8 @@ void ATutBaseProjectile::CalculateProjectileDirection()
 
 	SetActorRotation(NewRotation);
 
-
-
-
 }
+
 
 // Called when the game starts or when spawned
 void ATutBaseProjectile::BeginPlay()

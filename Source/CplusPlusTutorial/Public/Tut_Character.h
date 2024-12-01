@@ -27,9 +27,15 @@ protected:
 	TSubclassOf<AActor> SecondaryProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> TertiaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
 
+	AActor* SpawnedProjectile;
+
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_TertiaryAttack;
 
 public:
 	// Sets default values for this character's properties
@@ -63,8 +69,11 @@ public:
 	void Run(const FInputActionValue& Value);
 	void StopRun(const FInputActionValue& Value);
 	void PrimaryAttack();
-	void SecondaryAttack();
 	void PrimaryAttack_TimeElapsed();
+	void SecondaryAttack();
+	void TertiaryAttack();
+	void TertiaryAttack_TimeElapsed();
+	void TertiaryAttack_TimerTeleport();
 	void PrimaryInteract();
 
 };

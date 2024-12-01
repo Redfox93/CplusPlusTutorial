@@ -7,6 +7,8 @@
 #include "InputActionValue.h"
 #include "DrawDebugHelpers.h"
 #include "TutInteractionComponent.h"
+#include "TutBaseProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 ATut_Character::ATut_Character()
@@ -24,7 +26,7 @@ ATut_Character::ATut_Character()
     CameraComp->SetupAttachment(SpringArmComp);
     CameraComp->bUsePawnControlRotation = false;
 
-    //IMPLEMENT BINDING! LIKE "F" FOR INTERACT
+    //IMPLEMENTED BINDING "F" FOR INTERACT
     InteractionComp = CreateDefaultSubobject<UTutInteractionComponent>(TEXT("InteractionComponent"));
 
     // Character Movement Configuration
@@ -112,9 +114,13 @@ void ATut_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
             {
                 EnhancedInputComponent->BindAction(MyPlayerController->IA_PrimaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::PrimaryAttack);
             }
-            if (MyPlayerController->IA_PrimaryAttack)
+            if (MyPlayerController->IA_SecondaryAttack)
             {
                 EnhancedInputComponent->BindAction(MyPlayerController->IA_SecondaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::SecondaryAttack);
+            }
+            if (MyPlayerController->IA_TertiaryAttack)
+            {
+                EnhancedInputComponent->BindAction(MyPlayerController->IA_TertiaryAttack, ETriggerEvent::Triggered, this, &ATut_Character::TertiaryAttack);
             }
             if (MyPlayerController->IA_PrimaryInteract)
             {
@@ -168,59 +174,136 @@ void ATut_Character::StopRun(const FInputActionValue& Value)
     }
 }
 
+
+//PRIMARY ATTACK---------------------------------------------------------------
+
 void ATut_Character::PrimaryAttack()
 {
 
     PlayAnimMontage(AttackAnim);
 
     GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ATut_Character::PrimaryAttack_TimeElapsed, 0.35f);
-  //  GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
-
 }
+
+
+void ATut_Character::PrimaryAttack_TimeElapsed()
+{
+    if (PrimaryProjectileClass)
+    {
+        USkeletalMeshComponent* MyMesh = GetMesh();
+
+        FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
+        FRotator SpawnRotation;
+
+        FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+
+        GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
+
+        DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+        return;
+    }
+  
+    UE_LOG(LogTemp, Error, TEXT("PrimaryProjectileClass is not set!"));
+}
+
+//SECONDARY ATTACK ---------------------------------------------------------------
 
 void ATut_Character::SecondaryAttack()
 {
 
-    USkeletalMeshComponent* MyMesh = GetMesh();
+    if (SecondaryProjectileClass)
+    {
+        PlayAnimMontage(AttackAnim);
+        USkeletalMeshComponent* MyMesh = GetMesh();
+
+        FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
+        FRotator SpawnRotation;
+
+        FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 
+        GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTM, SpawnParams);
 
-    FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
-    FRotator SpawnRotation;
+        DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+        return;
+    }
 
-    FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
-
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-
-    GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTM, SpawnParams);
-
-    DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+    UE_LOG(LogTemp, Error, TEXT("SecondaryProjectileClass is not set!"));
 }
 
-void ATut_Character::PrimaryAttack_TimeElapsed()
+
+
+
+void ATut_Character::TertiaryAttack()
 {
-
-    USkeletalMeshComponent* MyMesh = GetMesh();
-
     
+    if (TertiaryProjectileClass)
+    {
+        PlayAnimMontage(AttackAnim);
 
-    FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
-    FRotator SpawnRotation;
-   
-    FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
+        USkeletalMeshComponent* MyMesh = GetMesh();
+        FVector SpawnLocation = MyMesh->GetSocketLocation("hand_l_Socket");
+        FRotator SpawnRotation;
 
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        FTransform SpawnTM = FTransform(SpawnRotation, SpawnLocation);
 
-
-    GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
-
-    DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 
+        SpawnedProjectile = GetWorld()->SpawnActor<AActor>(TertiaryProjectileClass, SpawnTM, SpawnParams);
+
+        DrawDebugSphere(GetWorld(), SpawnLocation, 10.f, 12, FColor::Red, false, 5.0f, 0, 2.0f);
+
+        GetWorldTimerManager().SetTimer(TimerHandle_TertiaryAttack, this, &ATut_Character::TertiaryAttack_TimeElapsed, 0.35f);
+        //GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+
+        return;
+      
+    }
+    UE_LOG(LogTemp, Error, TEXT("TertiaryProjectileClass is not set!"));
 }
+
+void ATut_Character::TertiaryAttack_TimeElapsed()
+{
+    //Call function on projectile to explode
+   // GetWorldTimerManager().ClearTimer(TimerHandle_TertiaryAttack);
+    GetWorldTimerManager().SetTimer(TimerHandle_TertiaryAttack, this, &ATut_Character::TertiaryAttack_TimerTeleport, 0.2f);
+    if (SpawnedProjectile)
+    {
+        ATutBaseProjectile* NewProjectile = Cast<ATutBaseProjectile>(SpawnedProjectile);
+        NewProjectile->CallExplosion();
+        return;
+
+    }
+    UE_LOG(LogTemp, Warning, TEXT("SpawnProjectile not valid"));
+    
+}
+
+void ATut_Character::TertiaryAttack_TimerTeleport()
+{
+    
+    if (SpawnedProjectile)
+    {
+        SpawnedProjectile->FindComponentByClass<UProjectileMovementComponent>()->StopMovementImmediately();
+        FVector teleportLocation = SpawnedProjectile->GetActorLocation();
+        this->SetActorLocation(teleportLocation, true);
+        SpawnedProjectile->Destroy(true);
+        UE_LOG(LogTemp, Warning, TEXT("Calling teleport"));
+        return;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Spawned Projectile not valid teleport"));
+    
+}
+
 
 void ATut_Character::PrimaryInteract()
 {
@@ -228,5 +311,4 @@ void ATut_Character::PrimaryInteract()
     {
         InteractionComp->PrimaryInteract();
     }
-   
 }

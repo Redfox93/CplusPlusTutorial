@@ -36,8 +36,11 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_PrimaryAttack;
 
-       UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_SecondaryAttack;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+    UInputAction* IA_TertiaryAttack;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
     UInputAction* IA_PrimaryInteract;

@@ -21,8 +21,11 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
-
 	void CalculateProjectileDirection();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "ExplosionEffect")
+	void CallExplosion();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Projectle")
 	float MaxRayCastDistance = 10000.f; // (100~mt)
