@@ -9,6 +9,7 @@
 #include "TutInteractionComponent.h"
 #include "TutBaseProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "TutAttributeComponent.h"
 
 // Sets default values
 ATut_Character::ATut_Character()
@@ -28,6 +29,8 @@ ATut_Character::ATut_Character()
 
     //IMPLEMENTED BINDING "F" FOR INTERACT
     InteractionComp = CreateDefaultSubobject<UTutInteractionComponent>(TEXT("InteractionComponent"));
+
+    AttributeComp = CreateDefaultSubobject<UTutAttributeComponent>(TEXT("AttributeComponent"));
 
     // Character Movement Configuration
     UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
@@ -188,7 +191,7 @@ void ATut_Character::PrimaryAttack()
 
 void ATut_Character::PrimaryAttack_TimeElapsed()
 {
-    if (PrimaryProjectileClass)
+    if (ensure(PrimaryProjectileClass))
     {
         USkeletalMeshComponent* MyMesh = GetMesh();
 
@@ -199,7 +202,7 @@ void ATut_Character::PrimaryAttack_TimeElapsed()
 
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
+        SpawnParams.Owner = this;
 
         GetWorld()->SpawnActor<AActor>(PrimaryProjectileClass, SpawnTM, SpawnParams);
 
@@ -215,7 +218,7 @@ void ATut_Character::PrimaryAttack_TimeElapsed()
 void ATut_Character::SecondaryAttack()
 {
 
-    if (SecondaryProjectileClass)
+    if (ensure(SecondaryProjectileClass))
     {
         PlayAnimMontage(AttackAnim);
         USkeletalMeshComponent* MyMesh = GetMesh();
@@ -227,6 +230,7 @@ void ATut_Character::SecondaryAttack()
 
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        SpawnParams.Owner = this;
 
 
         GetWorld()->SpawnActor<AActor>(SecondaryProjectileClass, SpawnTM, SpawnParams);
@@ -244,7 +248,7 @@ void ATut_Character::SecondaryAttack()
 void ATut_Character::TertiaryAttack()
 {
     
-    if (TertiaryProjectileClass)
+    if (ensure(TertiaryProjectileClass))
     {
         PlayAnimMontage(AttackAnim);
 
@@ -256,6 +260,7 @@ void ATut_Character::TertiaryAttack()
 
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        SpawnParams.Owner = this;
 
 
         SpawnedProjectile = GetWorld()->SpawnActor<AActor>(TertiaryProjectileClass, SpawnTM, SpawnParams);

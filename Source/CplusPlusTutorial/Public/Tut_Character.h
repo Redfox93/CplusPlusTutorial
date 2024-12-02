@@ -12,6 +12,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UTutInteractionComponent;
 class UAnimMontage;
+class UTutAttributeComponent;
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATut_Character : public  ACharacter
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UTutInteractionComponent* InteractionComp;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	UTutAttributeComponent* AttributeComp;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

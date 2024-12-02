@@ -8,7 +8,9 @@
 #include "NiagaraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
-#include "TutBaseProjectile.h"
+#include "TutAttributeComponent.h"
+
+
 
 
 // Sets default values
@@ -20,6 +22,8 @@ ATutBaseProjectile::ATutBaseProjectile()
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
 	SphereComp->SetCollisionProfileName("Projectile");
+	SphereComp->SetGenerateOverlapEvents(true);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATutBaseProjectile::OnActorOverlap);
 
 	RootComponent = SphereComp;
 
@@ -97,6 +101,23 @@ void ATutBaseProjectile::BeginPlay()
 void ATutBaseProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void ATutBaseProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != GetOwner())
+	{
+		UTutAttributeComponent* AttributeComp = Cast<UTutAttributeComponent>(OtherActor->GetComponentByClass(UTutAttributeComponent::StaticClass()));
+		if (AttributeComp)
+		{
+			AttributeComp->ApplyHealthChange(-20.f);
+
+			Destroy();
+
+			UE_LOG(LogTemp, Warning, TEXT("POJECTILE DESTROYED"));
+		}
+	}
 
 }
 
