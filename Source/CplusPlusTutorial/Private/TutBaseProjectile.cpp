@@ -27,8 +27,9 @@ ATutBaseProjectile::ATutBaseProjectile()
 
 	RootComponent = SphereComp;
 
-	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagarSystemComponent");
-	NiagaraComponent->SetupAttachment(SphereComp);
+	ProjectileEffectComponent = CreateDefaultSubobject<UNiagaraComponent>("ProjectileEffectComponent");
+	ProjectileEffectComponent->SetupAttachment(SphereComp);
+
 
 	MovementComp = CreateDefaultSubobject <UProjectileMovementComponent>("MovementComp");
 	MovementComp->InitialSpeed = 1000.0f;
@@ -87,6 +88,18 @@ void ATutBaseProjectile::CalculateProjectileDirection()
 
 }
 
+void ATutBaseProjectile::CallExplosion()
+{
+	if (ImpactEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactEffect, GetActorLocation(), GetActorRotation(), FVector(1.0f));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Explosion Effect Is Not Set"));
+	}
+}
+
 
 // Called when the game starts or when spawned
 void ATutBaseProjectile::BeginPlay()
@@ -120,4 +133,3 @@ void ATutBaseProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent
 	}
 
 }
-

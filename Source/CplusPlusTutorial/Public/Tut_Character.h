@@ -56,6 +56,12 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	UTutAttributeComponent* AttributeComp;
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UTutAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	UFUNCTION()
+	virtual void PostInitializeComponents() override;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

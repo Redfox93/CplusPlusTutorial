@@ -9,6 +9,7 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATutBaseProjectile : public AActor
@@ -23,7 +24,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void CalculateProjectileDirection();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "ExplosionEffect")
+	//UFUNCTION(VisibleAnywhere, BlueprintReadWrite, Category = "ExplosionEffect")
 	void CallExplosion();
 
 
@@ -46,6 +47,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* MovementComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
-	UNiagaraComponent* NiagaraComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "1 - Effects", meta = (DisplayPriority = 0));
+	UNiagaraComponent* ProjectileEffectComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "2 - Effects", meta = (DisplayName = " ImpactEffect", ToolTip = "Expodes on impact", DisplayPriority = 1));
+	UNiagaraSystem* ImpactEffect;
 };

@@ -46,6 +46,26 @@ ATut_Character::ATut_Character()
     bUseControllerRotationRoll = false;
 }
 
+void ATut_Character::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    AttributeComp->OnHealthChanged.AddDynamic(this, &ATut_Character::OnHealthChanged);
+}
+
+
+void ATut_Character::OnHealthChanged(AActor* InstigatorActor, UTutAttributeComponent* OwningComp, float NewHealth, float Delta)
+{
+    if (NewHealth <= 0.f && Delta < 0.0f)
+    {
+        ATut_PlayerController* PC = Cast<ATut_PlayerController>(GetController());
+        DisableInput(PC);
+    }
+
+}
+
+
+
 // Called when the game starts or when spawned
 void ATut_Character::BeginPlay()
 {

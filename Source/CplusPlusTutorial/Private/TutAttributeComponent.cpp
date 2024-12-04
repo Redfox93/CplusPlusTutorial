@@ -12,6 +12,11 @@ UTutAttributeComponent::UTutAttributeComponent()
 }
 
 
+bool UTutAttributeComponent::IsAlive()const
+{
+	return Health > 0.f;
+}
+
 bool UTutAttributeComponent::ApplyHealthChange(float Delta)
 {
 

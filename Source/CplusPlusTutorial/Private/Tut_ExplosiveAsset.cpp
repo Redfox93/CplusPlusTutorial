@@ -4,7 +4,7 @@
 #include "Tut_ExplosiveAsset.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "NiagaraComponent.h"
-#include "Tut_MagicProjectile.h"
+#include "TutBaseProjectile.h"
 
 
 // Sets default values
@@ -51,7 +51,7 @@ void ATut_ExplosiveAsset::Tick(float DeltaTime)
 void ATut_ExplosiveAsset::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
     // Check if the OtherActor is of type ATut_MagicProjectile
-    if (ATut_MagicProjectile* MagicProjectile = Cast<ATut_MagicProjectile>(OtherActor))
+    if (ATutBaseProjectile* MagicProjectile = Cast<ATutBaseProjectile>(OtherActor))
     {
         // Ensure it is not this actor (although this check may not be needed if the projectile is always a different actor)
         if (OtherActor != this)
