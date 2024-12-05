@@ -302,7 +302,8 @@ void ATut_Character::TertiaryAttack_TimeElapsed()
    // GetWorldTimerManager().ClearTimer(TimerHandle_TertiaryAttack);
     GetWorldTimerManager().SetTimer(TimerHandle_TertiaryAttack, this, &ATut_Character::TertiaryAttack_TimerTeleport, 0.2f);
     if (SpawnedProjectile)
-    {
+    {   
+      
         ATutBaseProjectile* NewProjectile = Cast<ATutBaseProjectile>(SpawnedProjectile);
         NewProjectile->CallExplosion();
         return;

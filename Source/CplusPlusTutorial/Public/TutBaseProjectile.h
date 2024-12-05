@@ -10,6 +10,8 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class UAudioComponent;
+class USoundBase;
 
 UCLASS()
 class CPLUSPLUSTUTORIAL_API ATutBaseProjectile : public AActor
@@ -20,13 +22,11 @@ public:
 	// Sets default values for this actor's properties
 	ATutBaseProjectile();
 
-
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void CalculateProjectileDirection();
 
-	//UFUNCTION(VisibleAnywhere, BlueprintReadWrite, Category = "ExplosionEffect")
+	UFUNCTION(BlueprintCallable, Category = "ExplosionEffect")
 	void CallExplosion();
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Projectle")
 	float MaxRayCastDistance = 10000.f; // (100~mt)
@@ -39,7 +39,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* SphereComp;
@@ -52,4 +52,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "2 - Effects", meta = (DisplayName = " ImpactEffect", ToolTip = "Expodes on impact", DisplayPriority = 1));
 	UNiagaraSystem* ImpactEffect;
+
+	UPROPERTY(VisibleAnywhere, Category ="Audio")
+	UAudioComponent* ProjectileLoop;
+
+	UPROPERTY(EditAnywhere, Category ="Audio")
+	USoundBase* ProjectileImpact;
 };

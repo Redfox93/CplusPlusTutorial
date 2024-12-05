@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "TutAttributeComponent.h"
+#include "Components/AudioComponent.h"
 
 
 
@@ -36,7 +37,8 @@ ATutBaseProjectile::ATutBaseProjectile()
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 
-
+	ProjectileLoop = CreateDefaultSubobject<UAudioComponent>("ProjectileAudio");
+	ProjectileLoop->SetupAttachment(SphereComp);
 }
 
 void ATutBaseProjectile::CalculateProjectileDirection()
@@ -89,10 +91,18 @@ void ATutBaseProjectile::CalculateProjectileDirection()
 }
 
 void ATutBaseProjectile::CallExplosion()
-{
+{	
+	if (!GetWorld())
+	{		
+		return;
+	}
 	if (ImpactEffect)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactEffect, GetActorLocation(), GetActorRotation(), FVector(1.0f));
+	}
+	if (ProjectileImpact)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ProjectileImpact, GetActorLocation());
 	}
 	else
 	{
@@ -107,6 +117,11 @@ void ATutBaseProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	CalculateProjectileDirection();
+
+	if (ProjectileLoop)
+	{
+		ProjectileLoop->Play();
+	}
 	
 }
 
