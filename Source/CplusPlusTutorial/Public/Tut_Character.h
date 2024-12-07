@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Materials/MaterialInterface.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #include "Tut_Character.generated.h"
 
@@ -58,6 +60,15 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UTutAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	FTimerHandle TimerHandle_DamageTimer;
+
+	FTimerHandle TimerHandle_RevertTimer;
+
+	UMaterialInstanceDynamic* SkeletalDynamicMaterial;
+
+	UFUNCTION()
+	void UpdatePlayerLogo(bool UpdateDamageFlicker);
 
 	UFUNCTION()
 	virtual void PostInitializeComponents() override;

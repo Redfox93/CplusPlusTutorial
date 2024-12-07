@@ -9,6 +9,9 @@
 #include "TutInteractionComponent.h"
 #include "TutBaseProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "TimerManager.h" 
+#include "Materials/MaterialInterface.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "TutAttributeComponent.h"
 
 // Sets default values
@@ -51,18 +54,74 @@ void ATut_Character::PostInitializeComponents()
     Super::PostInitializeComponents();
 
     AttributeComp->OnHealthChanged.AddDynamic(this, &ATut_Character::OnHealthChanged);
+  
 }
 
 
 void ATut_Character::OnHealthChanged(AActor* InstigatorActor, UTutAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
+    // Apply the damage flicker effect
+    FTimerDelegate DamageDelegate;
+    DamageDelegate.BindUFunction(this, "UpdatePlayerLogo", true); // Apply the damage effect
+    GetWorld()->GetTimerManager().SetTimer(TimerHandle_DamageTimer, DamageDelegate, 0.1f, false);
+
+    // Schedule a timer to revert the effect after 2 seconds
+    FTimerDelegate RevertDelegate;
+    RevertDelegate.BindUFunction(this, "UpdatePlayerLogo", false); // Revert the effect
+    GetWorld()->GetTimerManager().SetTimer(TimerHandle_RevertTimer, RevertDelegate, 2.0f, false);
+
+    UE_LOG(LogTemp, Warning, TEXT("On Health Changed called"));
+
+    // Check if health is zero or below
     if (NewHealth <= 0.f && Delta < 0.0f)
     {
         ATut_PlayerController* PC = Cast<ATut_PlayerController>(GetController());
         DisableInput(PC);
     }
-
 }
+
+
+void ATut_Character::UpdatePlayerLogo(bool UpdateDamageFlicker)
+{
+    // Clear the timer that applied the damage effect (to prevent overlapping calls)
+    
+
+    USkeletalMeshComponent* SkeletalMesh = GetMesh();
+    if (!SkeletalMesh)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SkeletalMesh is null!"));
+        return;
+    }
+
+    // If the material instance isn't set, create it
+    if (!SkeletalDynamicMaterial)
+    {
+        SkeletalDynamicMaterial = SkeletalMesh->CreateAndSetMaterialInstanceDynamic(0);
+        if (!SkeletalDynamicMaterial)
+        {
+            UE_LOG(LogTemp, Error, TEXT("Failed to create dynamic material instance!"));
+            return;
+        }
+        UE_LOG(LogTemp, Warning, TEXT("Dynamic Material Instance created."));
+    }
+
+    // Apply or revert the damage effect based on UpdateDamageFlicker
+    if (UpdateDamageFlicker)
+    {
+        SkeletalDynamicMaterial->SetScalarParameterValue("DamageFlicker", 1.f);
+        UE_LOG(LogTemp, Warning, TEXT("Damage effect applied."));
+        GetWorld()->GetTimerManager().ClearTimer(TimerHandle_DamageTimer);
+       
+
+    }
+    else
+    {
+        SkeletalDynamicMaterial->SetScalarParameterValue("DamageFlicker", 0.f);
+        UE_LOG(LogTemp, Warning, TEXT("Damage effect reverted."));
+        GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RevertTimer);
+    }
+}
+
 
 
 
