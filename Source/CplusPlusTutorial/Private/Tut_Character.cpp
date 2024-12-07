@@ -10,6 +10,7 @@
 #include "TutBaseProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "TimerManager.h" 
+#include "Engine/World.h" 
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "TutAttributeComponent.h"
@@ -83,9 +84,7 @@ void ATut_Character::OnHealthChanged(AActor* InstigatorActor, UTutAttributeCompo
 
 void ATut_Character::UpdatePlayerLogo(bool UpdateDamageFlicker)
 {
-    // Clear the timer that applied the damage effect (to prevent overlapping calls)
-    
-
+    // Ensure the Skeletal Mesh and Material Instance are valid
     USkeletalMeshComponent* SkeletalMesh = GetMesh();
     if (!SkeletalMesh)
     {
@@ -93,7 +92,6 @@ void ATut_Character::UpdatePlayerLogo(bool UpdateDamageFlicker)
         return;
     }
 
-    // If the material instance isn't set, create it
     if (!SkeletalDynamicMaterial)
     {
         SkeletalDynamicMaterial = SkeletalMesh->CreateAndSetMaterialInstanceDynamic(0);
@@ -105,22 +103,57 @@ void ATut_Character::UpdatePlayerLogo(bool UpdateDamageFlicker)
         UE_LOG(LogTemp, Warning, TEXT("Dynamic Material Instance created."));
     }
 
-    // Apply or revert the damage effect based on UpdateDamageFlicker
+    // Apply or revert the damage effect
     if (UpdateDamageFlicker)
     {
         SkeletalDynamicMaterial->SetScalarParameterValue("DamageFlicker", 1.f);
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer0_Color", FLinearColor(1.f, 0.f, 0.f, 1.f)); // Red
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer1_Color", FLinearColor(1.f, 0.f, 0.f, 1.f)); // Red
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer2_Color", FLinearColor(1.f, 0.f, 0.f, 1.f)); // Red
         UE_LOG(LogTemp, Warning, TEXT("Damage effect applied."));
-        GetWorld()->GetTimerManager().ClearTimer(TimerHandle_DamageTimer);
-       
-
     }
     else
     {
         SkeletalDynamicMaterial->SetScalarParameterValue("DamageFlicker", 0.f);
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer0_Color", FLinearColor(0.f, 1.f, 1.f, 1.f)); // Cyan
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer1_Color", FLinearColor(0.f, 1.f, 1.f, 1.f)); // Cyan
+        SkeletalDynamicMaterial->SetVectorParameterValue("LogoLayer2_Color", FLinearColor(0.f, 1.f, 1.f, 1.f)); // Cyan
         UE_LOG(LogTemp, Warning, TEXT("Damage effect reverted."));
-        GetWorld()->GetTimerManager().ClearTimer(TimerHandle_RevertTimer);
+    }
+
+    // Log the current color values
+    FLinearColor Layer0Color;
+    FLinearColor Layer1Color;
+    FLinearColor Layer2Color;
+
+    if (SkeletalDynamicMaterial->GetVectorParameterValue(FName("LogoLayer0_Color"), Layer0Color))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LogoLayer0_Color: R=%f, G=%f, B=%f, A=%f"), Layer0Color.R, Layer0Color.G, Layer0Color.B, Layer0Color.A);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get LogoLayer0_Color!"));
+    }
+
+    if (SkeletalDynamicMaterial->GetVectorParameterValue(FName("LogoLayer1_Color"), Layer1Color))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LogoLayer1_Color: R=%f, G=%f, B=%f, A=%f"), Layer1Color.R, Layer1Color.G, Layer1Color.B, Layer1Color.A);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get LogoLayer1_Color!"));
+    }
+
+    if (SkeletalDynamicMaterial->GetVectorParameterValue(FName("LogoLayer2_Color"), Layer2Color))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LogoLayer2_Color: R=%f, G=%f, B=%f, A=%f"), Layer2Color.R, Layer2Color.G, Layer2Color.B, Layer2Color.A);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get LogoLayer2_Color!"));
     }
 }
+
 
 
 
