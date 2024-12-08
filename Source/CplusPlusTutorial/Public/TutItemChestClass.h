@@ -15,8 +15,6 @@ class CPLUSPLUSTUTORIAL_API ATutItemChestClass : public AActor, public ITutGamep
 {
 	GENERATED_BODY()
 
-	
-	
 public:	
 	// Sets default values for this actor's properties
 	ATutItemChestClass();
