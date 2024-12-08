@@ -10,7 +10,7 @@ ATutInteractable::ATutInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereCollisionComp = CreateDefaultSubobject<USphereComponent>("SphereCollisionComp");
-	SphereCollisionComp->SetCollisionObjectType(ECC_WorldDynamic);
+	SphereCollisionComp->SetCollisionObjectType(ECC_Pawn);
 	SphereCollisionComp->SetGenerateOverlapEvents(true);
 	SphereCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ATutInteractable::OnActorOverlap);
 	SphereCollisionComp->OnComponentEndOverlap.AddDynamic(this, &ATutInteractable::OnActorEndOverlap);
@@ -59,7 +59,7 @@ void ATutInteractable::Interact_Implementation(APawn* InstigatorPawn)
 
 		FTimerDelegate RevertDelegate;
 		RevertDelegate.BindUFunction(this, FName("HandleInteraction"), true);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ActivateTimer, RevertDelegate, 2.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ActivateTimer, RevertDelegate, 10.0f, false);
 	}
 	else
 	{

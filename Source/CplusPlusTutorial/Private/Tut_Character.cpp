@@ -61,17 +61,7 @@ void ATut_Character::PostInitializeComponents()
 
 void ATut_Character::OnHealthChanged(AActor* InstigatorActor, UTutAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-    // Apply the damage flicker effect
-    FTimerDelegate DamageDelegate;
-    DamageDelegate.BindUFunction(this, "UpdatePlayerLogo", true); // Apply the damage effect
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle_DamageTimer, DamageDelegate, 0.1f, false);
-
-    // Schedule a timer to revert the effect after 2 seconds
-    FTimerDelegate RevertDelegate;
-    RevertDelegate.BindUFunction(this, "UpdatePlayerLogo", false); // Revert the effect
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle_RevertTimer, RevertDelegate, 2.0f, false);
-
-    UE_LOG(LogTemp, Warning, TEXT("On Health Changed called"));
+    
 
     // Check if health is zero or below
     if (NewHealth <= 0.f && Delta < 0.0f)
@@ -79,6 +69,22 @@ void ATut_Character::OnHealthChanged(AActor* InstigatorActor, UTutAttributeCompo
         ATut_PlayerController* PC = Cast<ATut_PlayerController>(GetController());
         DisableInput(PC);
     }
+
+    if (Delta < 0)
+    {
+        // Apply the damage flicker effect
+        FTimerDelegate DamageDelegate;
+        DamageDelegate.BindUFunction(this, "UpdatePlayerLogo", true); // Apply the damage effect
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle_DamageTimer, DamageDelegate, 0.1f, false);
+
+        // Schedule a timer to revert the effect after 2 seconds
+        FTimerDelegate RevertDelegate;
+        RevertDelegate.BindUFunction(this, "UpdatePlayerLogo", false); // Revert the effect
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle_RevertTimer, RevertDelegate, 2.0f, false);
+
+        UE_LOG(LogTemp, Warning, TEXT("On Health Changed called"));
+    }
+   
 }
 
 

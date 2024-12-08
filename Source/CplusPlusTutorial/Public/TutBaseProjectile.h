@@ -11,6 +11,7 @@ class UProjectileMovementComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UAudioComponent;
+class ACharacter;
 class USoundBase;
 
 UCLASS()
@@ -58,4 +59,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category ="Audio")
 	USoundBase* ProjectileImpact;
+
+	UPROPERTY(VisibleAnywhere)
+	ACharacter* PlayerCharacter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 };

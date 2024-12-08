@@ -9,6 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "TutAttributeComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "Camera/CameraShakeSourceComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/Character.h"
 #include "Components/AudioComponent.h"
 
 
@@ -39,6 +43,8 @@ ATutBaseProjectile::ATutBaseProjectile()
 
 	ProjectileLoop = CreateDefaultSubobject<UAudioComponent>("ProjectileAudio");
 	ProjectileLoop->SetupAttachment(SphereComp);
+
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 }
 
 void ATutBaseProjectile::CalculateProjectileDirection()
@@ -108,7 +114,36 @@ void ATutBaseProjectile::CallExplosion()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Explosion Effect Is Not Set"));
 	}
+
+
+	if (!PlayerCharacter)
+	{
+		return;
+	}
+
+	float Distance = FVector::Dist(GetActorLocation(), PlayerCharacter->GetActorLocation());
+
+	float MaxShakeDistance = 1000.0f; // Maximum distance for the shake
+	float MinShakeDistance = 200.0f;  // Minimum distance for maximum shake intensity
+
+	if (Distance <= MaxShakeDistance)
+	{
+		// Calculate shake intensity based on distance
+		float ShakeScale = 1.0f - FMath::Clamp((Distance - MinShakeDistance) / (MaxShakeDistance - MinShakeDistance), 0.0f, 1.0f);
+
+		// Apply camera shake
+		APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+		if (PlayerController && CameraShakeClass)
+		{
+			PlayerController->ClientStartCameraShake(CameraShakeClass, ShakeScale);
+		}
+		else if (!CameraShakeClass)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CameraShakeClass is not set!"));
+		}
+	}
 }
+
 
 
 // Called when the game starts or when spawned
@@ -146,5 +181,4 @@ void ATutBaseProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent
 			UE_LOG(LogTemp, Warning, TEXT("POJECTILE DESTROYED"));
 		}
 	}
-
 }

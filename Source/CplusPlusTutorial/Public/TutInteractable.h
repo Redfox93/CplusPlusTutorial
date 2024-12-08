@@ -32,7 +32,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// ITutGameplayInterface implementation
-	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+	void Interact_Implementation(APawn* InstigatorPawn);
+	
 
 protected:
 	/** Called when an actor overlaps with the sphere component */
