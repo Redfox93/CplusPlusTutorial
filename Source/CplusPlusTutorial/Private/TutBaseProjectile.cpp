@@ -136,6 +136,7 @@ void ATutBaseProjectile::CallExplosion()
 		if (PlayerController && CameraShakeClass)
 		{
 			PlayerController->ClientStartCameraShake(CameraShakeClass, ShakeScale);
+			UE_LOG(LogTemp, Warning, TEXT("Playing camera shake is not set!"));
 		}
 		else if (!CameraShakeClass)
 		{
