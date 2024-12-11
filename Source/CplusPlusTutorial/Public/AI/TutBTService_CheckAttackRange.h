@@ -16,6 +16,9 @@ class CPLUSPLUSTUTORIAL_API UTutBTService_CheckAttackRange : public UBTService
 
 protected:
 
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FBlackboardKeySelector AttackRangedKey;
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	
 };
