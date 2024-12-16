@@ -13,6 +13,11 @@
 #include "Engine/World.h" 
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Perception/AIPerceptionSystem.h"
+#include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AISense_Team.h"
 #include "TutAttributeComponent.h"
 
 // Sets default values
@@ -48,14 +53,33 @@ ATut_Character::ATut_Character()
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
     bUseControllerRotationRoll = false;
+
+    PrimaryProjectileClass = nullptr;
+    SecondaryProjectileClass = nullptr;
+    TertiaryProjectileClass = nullptr;
+
 }
 
 void ATut_Character::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
 
+    if (!ensure(AttributeComp))
+    {
+        UE_LOG(LogTemp, Error, TEXT("AttributeComp is not initialized!"));
+    }
+
     AttributeComp->OnHealthChanged.AddDynamic(this, &ATut_Character::OnHealthChanged);
-  
+
+    if (GetWorld())
+    {
+        UAIPerceptionSystem::RegisterPerceptionStimuliSource(GetWorld(), UAISense_Sight::StaticClass(), this);
+        UE_LOG(LogTemp, Warning, TEXT("Perception stimuli registered for %s"), *GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("World is not valid for %s"), *GetName());
+    }
 }
 
 
